@@ -1,0 +1,9 @@
+testCases:
+  - name: "Hover on each menu item"
+    isSkip: false
+    hover:
+      - "Personal"
+      - "Small Business"
+      - "Enterprise"
+      - "Partners"
+      - "Useful Info"

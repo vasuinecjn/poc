@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="MySuite">
+    <listeners>
+        <listener class-name="org.poc.listeners.ExtentTestNGListener"/>
+    </listeners>
+    <test name="MyTests">
+        <classes>
+            <class name="org.poc.paypal.PaypalTest"/>
+        </classes>
+    </test>
+</suite>
