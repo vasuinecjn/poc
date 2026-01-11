@@ -79,13 +79,44 @@ public abstract class BasePage {
         // Build By based on type
         switch (type.toLowerCase()) {
             case "css":
-                return this.driver.findElement(By.cssSelector(expr));
+                return this.webOp.waitForElement(By.cssSelector(expr));
             case "xpath":
-                return this.driver.findElement(By.xpath(expr));
+                return this.webOp.waitForElement(By.xpath(expr));
             case "id":
-                return this.driver.findElement(By.id(expr));
+                return this.webOp.waitForElement(By.id(expr));
             case "name":
-                return this.driver.findElement(By.name(expr));
+                return this.webOp.waitForElement(By.name(expr));
+            default:
+                throw new RuntimeException("Unsupported locator type: " + type);
+        }
+    }
+
+    public By getBy(String key, String... args) {
+        String locatorValue = getLocator(key); // e.g. "css|button[data-text='{0}']"
+        if (locatorValue == null) {
+            throw new RuntimeException("Locator not found for key: " + key);
+        }
+
+        // Split into type and expression
+        String[] parts = locatorValue.split("\\|", 2);
+        String type = parts[0].trim();
+        String expr = parts[1].trim();
+
+        // Replace placeholders {0}, {1}, {2}... with args
+        for (int i = 0; i < args.length; i++) {
+            expr = expr.replace("{" + i + "}", String.valueOf(args[i]));
+        }
+
+        // Build By based on type
+        switch (type.toLowerCase()) {
+            case "css":
+                return By.cssSelector(expr);
+            case "xpath":
+                return By.xpath(expr);
+            case "id":
+                return By.id(expr);
+            case "name":
+                return By.name(expr);
             default:
                 throw new RuntimeException("Unsupported locator type: " + type);
         }

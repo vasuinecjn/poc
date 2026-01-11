@@ -28,4 +28,12 @@ public class PayPalHomePage extends BasePage {
         }
         return this;
     }
+
+    public ShopAndBuyPage navigateToShopAndBuyPage() {
+        this.webOp.scrollToBottom();
+        // this.webOp.scrollUntilElementVisible(getElement("shopAndBuyLink"));
+        this.webOp.scrollToElement(getElement("shopAndBuyLink"));
+        this.webOp.jsClick(getElement("shopAndBuyLink"));
+        return new ShopAndBuyPage(driver, webOp);
+    }
 }

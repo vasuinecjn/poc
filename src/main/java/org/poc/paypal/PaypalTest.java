@@ -24,6 +24,6 @@ public class PaypalTest extends SeleniumTestCase {
 
     @Override
     public String getTestFileName() {
-        return "tests/hoverTests.yaml";
+        return "hoverTests.yaml";
     }
 }

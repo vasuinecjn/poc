@@ -5,8 +5,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v141.network.Network;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -16,8 +16,11 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.Set;
+import org.openqa.selenium.devtools.v141.network.model.ResourceType;
 
 abstract public class SeleniumTestCase {
 
@@ -26,9 +29,9 @@ abstract public class SeleniumTestCase {
     private final ThreadLocal<WebOperations> webOperations = new ThreadLocal<>();
     private final ThreadLocal<IdleDetector> idleDetector = new ThreadLocal<>();
 
-    @BeforeClass
+    @BeforeMethod
     public void setUp() {
-        System.out.println(">>> BeforeClass: Setup resources");
+        System.out.println(">>> BeforeMethod: Setup resources");
         WebDriver cd = new ChromeDriver();
         WebDriverWait wt = new WebDriverWait(cd, Duration.ofSeconds(60));
         driver.set(cd);
@@ -44,10 +47,10 @@ abstract public class SeleniumTestCase {
         exec(testCase);
     }
 
-    @AfterClass
+    @AfterMethod
     public void tearDown() {
-        System.out.println(">>> AfterClass: Cleanup resources");
-        if(getDriver() != null) {
+        System.out.println(">>> AfterMethod: Cleanup resources");
+        if (getDriver() != null) {
             getDriver().quit();
         }
     }
@@ -56,7 +59,7 @@ abstract public class SeleniumTestCase {
     public Object[][] provideData() {
         Yaml yaml = new Yaml();
         String fileName = getTestFileName();
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName)) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("tests/" + fileName)) {
             Map<String, Object> data = yaml.load(inputStream);
             List<Map<String, Object>> tests = (List<Map<String, Object>>) data.get("testCases");
             List<Map<String, Object>> filteredTests = tests.stream()
@@ -65,7 +68,8 @@ abstract public class SeleniumTestCase {
                         return !(isSkip instanceof Boolean && (Boolean) isSkip);
                     })
                     .collect(Collectors.toList());
-            Object[][] result = new Object[tests.size()][1];
+            System.out.println("Total tests ---> " + filteredTests.size());
+            Object[][] result = new Object[filteredTests.size()][1];
             for (int i = 0; i < filteredTests.size(); i++) {
                 result[i][0] = filteredTests.get(i);
             }
@@ -76,6 +80,7 @@ abstract public class SeleniumTestCase {
     }
 
     public abstract void exec(Map<String, Object> testCase);
+
     public abstract String getTestFileName();
 
     public WebDriver getDriver() {
@@ -96,6 +101,8 @@ abstract public class SeleniumTestCase {
 
     public static class IdleDetector {
         private final AtomicInteger activeRequests = new AtomicInteger(0);
+        private final Set<String> ignoredRequestIds = ConcurrentHashMap.newKeySet();
+        private final ConcurrentHashMap<String, String> activeRequestUrls = new ConcurrentHashMap<>();
 
         public IdleDetector(ChromeDriver driver) {
             DevTools devTools = driver.getDevTools();
@@ -107,21 +114,55 @@ abstract public class SeleniumTestCase {
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
-                    Optional.empty()
-            ));
+                    Optional.empty()));
 
             // Increment when a request is sent
             devTools.addListener(Network.requestWillBeSent(), event -> {
-                activeRequests.incrementAndGet();
+                ResourceType type = event.getType().orElse(ResourceType.OTHER);
+                String url = event.getRequest().getUrl();
+                if (isIgnored(type) || isIgnoredUrl(url)) {
+                    ignoredRequestIds.add(event.getRequestId().toString());
+                } else {
+                    activeRequests.incrementAndGet();
+                    activeRequestUrls.put(event.getRequestId().toString(), event.getRequest().getUrl());
+                }
             });
 
             // Decrement when a request finishes or fails
             devTools.addListener(Network.loadingFinished(), event -> {
-                activeRequests.decrementAndGet();
+                String id = event.getRequestId().toString();
+                if (ignoredRequestIds.contains(id)) {
+                    ignoredRequestIds.remove(id);
+                } else {
+                    activeRequests.decrementAndGet();
+                    activeRequestUrls.remove(id);
+                }
             });
             devTools.addListener(Network.loadingFailed(), event -> {
-                activeRequests.decrementAndGet();
+                String id = event.getRequestId().toString();
+                if (ignoredRequestIds.contains(id)) {
+                    ignoredRequestIds.remove(id);
+                } else {
+                    activeRequests.decrementAndGet();
+                    activeRequestUrls.remove(id);
+                }
             });
+        }
+
+        private boolean isIgnored(ResourceType type) {
+            return type == ResourceType.IMAGE ||
+                    type == ResourceType.STYLESHEET ||
+                    type == ResourceType.FONT ||
+                    type == ResourceType.MEDIA ||
+                    type == ResourceType.WEBSOCKET ||
+                    type == ResourceType.MANIFEST;
+        }
+
+        private boolean isIgnoredUrl(String url) {
+            return false;
+            // return url.contains("t.paypal.com") ||
+            // url.contains("google-analytics") ||
+            // url.contains("doubleclick");
         }
 
         public boolean isIdle() {
@@ -139,9 +180,11 @@ abstract public class SeleniumTestCase {
                     int pending = activeRequests.get();
                     reset();
                     if (strict) {
-                        throw new RuntimeException("Timeout waiting for browser to become idle");
+                        throw new RuntimeException(
+                                "Timeout waiting for browser to become idle. Pending: " + activeRequestUrls.values());
                     } else {
-                        System.out.println("Browser was not idle even after " + timeoutMillis + " with active calls " + pending);
+                        System.out.println("Browser was not idle even after " + timeoutMillis + " with active calls "
+                                + pending + ". Pending: " + activeRequestUrls.values());
                         return; // soft exit
                     }
                 }

@@ -1,0 +1,20 @@
+testCases:
+  - name: "Shop and buy test 1"
+    isSkip: false
+    category: "Fashion"
+    shopWith: "asos"
+    searchProduct: "tote"
+    selectProduct: "tote"
+    selectProductByIndex: "1"
+    isFavorite: false
+    addToBag: true
+  - name: "Shop and buy test 2"
+    isSkip: false
+    category: "Fashion"
+    shopWith: "asos"
+    searchProduct: "leather"
+    selectProduct: "leather"
+    selectProductByIndex: "1"
+    isFavorite: true
+    addToBag: true
+
