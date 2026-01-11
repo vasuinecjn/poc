@@ -5,7 +5,7 @@
     </listeners>
     <test name="MyTests">
         <classes>
-<!--           <class name="org.poc.paypal.PaypalTest"/>-->
+          <class name="org.poc.paypal.PaypalTest"/>
            <class name="org.poc.paypal.ShopAndBuyTests"/>
         </classes>
     </test>

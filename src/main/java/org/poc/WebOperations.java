@@ -25,6 +25,7 @@ public class WebOperations {
     public void click(WebElement element) {
         element = wait.until(ExpectedConditions.visibilityOf(element));
         element.click();
+//        ExtentTestNGListener.getLogger().info("Clicked on element: {}", locator.toString());
         try {
             idleDetector.waitUntilIdle(15000, false);
         } catch (InterruptedException ignored) {
