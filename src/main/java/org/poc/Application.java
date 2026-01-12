@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.poc.pages.GraphHomePage;
 import org.poc.pages.PayPalHomePage;
 
 public class Application {
@@ -33,5 +34,13 @@ public class Application {
         } catch (Exception e) {
         }
         return new PayPalHomePage(driver, webOp);
+    }
+
+    public GraphHomePage launchEmpGwtApplication() {
+        driver.get("http://localhost:8080/");
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {}
+        return new GraphHomePage(driver, webOp);
     }
 }

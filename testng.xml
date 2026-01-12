@@ -9,4 +9,11 @@
            <class name="org.poc.paypal.ShopAndBuyTests"/>
         </classes>
     </test>
+    <test name="Graph Tests">
+        <classes>
+            <class name="org.poc.graphs.EmployeeGraphTests"/>
+            <class name="org.poc.graphs.EmployeeDepartmentGraphTests"/>
+            <class name="org.poc.graphs.MonthlyRevenueTests"/>
+        </classes>
+    </test>
 </suite>

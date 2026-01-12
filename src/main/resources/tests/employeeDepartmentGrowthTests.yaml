@@ -1,0 +1,9 @@
+testCases:
+  - name: "Show and hide department wise employee graphs"
+    isSkip: false
+    departments:
+      - "Installation & Developers"
+      - "Manufacturing"
+      - "Sales & Distribution"
+      - "Operations & Maintenance"
+      - "Other"

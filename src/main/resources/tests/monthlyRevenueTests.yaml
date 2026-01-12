@@ -1,0 +1,4 @@
+testCases:
+  - name: "Log all the months revenue and compare"
+    isSkip: false
+    between: Apr,Aug
