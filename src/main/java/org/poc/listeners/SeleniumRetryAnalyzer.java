@@ -1,7 +1,5 @@
 package org.poc.listeners;
 
-import org.openqa.selenium.devtools.v141.overlay.model.IsolatedElementHighlightConfig;
-import org.openqa.selenium.devtools.v141.overlay.model.SourceOrderConfig;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 
@@ -13,6 +11,7 @@ public class SeleniumRetryAnalyzer implements IRetryAnalyzer {
     public SeleniumRetryAnalyzer() {
         this(2);
     }
+
     public SeleniumRetryAnalyzer(int maxRetryCount) {
         this.maxRetryCount = maxRetryCount;
     }
