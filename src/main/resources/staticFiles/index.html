@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>U.S. Solar Employment & Monthly Revenue</title>
+
+    <!-- ================= HIGHCHARTS LIBRARIES ================= -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <!-- ================= GLOBAL STYLES ================= -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        /* -------- FIRST GRAPH -------- */
+        .highcharts-figure {
+            width: 900px;
+            margin: 0 auto 80px auto;
+        }
+
+        #container {
+            height: 500px;
+        }
+
+        .highcharts-description {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+            color: #444;
+        }
+
+        /* -------- SECOND GRAPH -------- */
+        .graph-section {
+            width: 900px;
+            margin: auto;
+        }
+
+        .graph-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        svg {
+            width: 900px;
+            height: 420px;
+            background: #ffffff;
+            border-radius: 6px;
+        }
+
+        /* Tooltip behavior */
+        .chart-group:hover .tooltip {
+            visibility: visible;
+        }
+
+        .tooltip rect {
+            fill: rgba(0, 0, 0, 0.8);
+            rx: 4;
+            ry: 4;
+        }
+
+        .tooltip text {
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ===================================================================== -->
+<!-- ===================== GRAPH 1: HIGHCHARTS LINE ====================== -->
+<!-- ===================================================================== -->
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+    <p class="highcharts-description">
+        Basic line chart showing trends in a dataset. This chart includes the
+        <code>series-label</code> module, which adds a label to each line for
+        enhanced readability.
+    </p>
+</figure>
+
+<script>
+    Highcharts.chart('container', {
+        title: {
+            text: 'U.S Solar Employment Growth',
+            align: 'left'
+        },
+        subtitle: {
+            text: 'By Job Category. Source: <a href="https://irecusa.org/programs/solar-jobs-census/" target="_blank">IREC</a>.',
+            align: 'left'
+        },
+        yAxis: {
+            title: {
+                text: 'Number of Employees'
+            }
+        },
+        xAxis: {
+            accessibility: {
+                rangeDescription: 'Range: 2010 to 2020'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+        plotOptions: {
+            series: {
+                label: {
+                    connectorAllowed: false
+                },
+                pointStart: 2010
+            }
+        },
+        series: [{
+            name: 'Installation & Developers',
+            data: [43934, 48656, 65165, 81827, 112143, 142383,
+                171533, 165174, 155157, 161454, 154610]
+        }, {
+            name: 'Manufacturing',
+            data: [24916, 37941, 29742, 29851, 32490, 30282,
+                38121, 36885, 33726, 34243, 31050]
+        }, {
+            name: 'Sales & Distribution',
+            data: [11744, 30000, 16005, 19771, 20185, 24377,
+                32147, 30912, 29243, 29213, 25663]
+        }, {
+            name: 'Operations & Maintenance',
+            data: [null, null, null, null, null, null, null,
+                null, 11164, 11218, 10077]
+        }, {
+            name: 'Other',
+            data: [21908, 5548, 8105, 11248, 8989, 11816,
+                18274, 17300, 13053, 11906, 10073]
+        }],
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 600
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        }
+    });
+</script>
+
+<!-- ===================================================================== -->
+<!-- ================= GRAPH 2: COMPLEX SVG BAR CHART ==================== -->
+<!-- ===================================================================== -->
+
+<div class="graph-section wrapper-level-1">
+    <div class="wrapper-level-2">
+        <div class="wrapper-level-3 graph-header">
+            <h2>Monthly Revenue (USD)</h2>
+            <p>Example dataset: Revenue from Jan → Dec</p>
+        </div>
+
+        <svg>
+            <!-- AXES -->
+            <line x1="60" y1="360" x2="840" y2="360" stroke="#444" stroke-width="2"></line>
+            <line x1="60" y1="360" x2="60" y2="40" stroke="#444" stroke-width="2"></line>
+
+            <!-- MONTH LABELS -->
+            <g fill="#333">
+                <text x="90" y="380">Jan</text>
+                <text x="150" y="380">Feb</text>
+                <text x="210" y="380">Mar</text>
+                <text x="270" y="380">Apr</text>
+                <text x="330" y="380">May</text>
+                <text x="390" y="380">Jun</text>
+                <text x="450" y="380">Jul</text>
+                <text x="510" y="380">Aug</text>
+                <text x="570" y="380">Sep</text>
+                <text x="630" y="380">Oct</text>
+                <text x="690" y="380">Nov</text>
+                <text x="750" y="380">Dec</text>
+            </g>
+
+            <!-- BAR GROUPS WITH TOOLTIP -->
+
+            <!-- JAN -->
+            <g class="chart-group" transform="translate(80,0)">
+                <rect class="bar" x="0" y="290" width="40" height="70" fill="#4CAF50"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="260" width="120" height="24"></rect>
+                    <text x="5" y="277" fill="#fff">Jan: $45,000</text>
+                </g>
+            </g>
+
+            <!-- FEB -->
+            <g class="chart-group" transform="translate(140,0)">
+                <rect class="bar" x="0" y="280" width="40" height="80" fill="#2E7D32"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="250" width="120" height="24"></rect>
+                    <text x="5" y="267" fill="#fff">Feb: $52,000</text>
+                </g>
+            </g>
+
+            <!-- MAR -->
+            <g class="chart-group" transform="translate(200,0)">
+                <rect class="bar" x="0" y="270" width="40" height="90" fill="#1B5E20"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="240" width="120" height="24"></rect>
+                    <text x="5" y="257" fill="#fff">Mar: $60,000</text>
+                </g>
+            </g>
+
+            <!-- APR -->
+            <g class="chart-group" transform="translate(260,0)">
+                <rect class="bar" x="0" y="275" width="40" height="85" fill="#1976D2"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="245" width="120" height="24"></rect>
+                    <text x="5" y="262" fill="#fff">Apr: $58,000</text>
+                </g>
+            </g>
+
+            <!-- MAY -->
+            <g class="chart-group" transform="translate(320,0)">
+                <rect class="bar" x="0" y="245" width="40" height="115" fill="#1565C0"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="215" width="120" height="24"></rect>
+                    <text x="5" y="232" fill="#fff">May: $70,000</text>
+                </g>
+            </g>
+
+            <!-- JUN -->
+            <g class="chart-group" transform="translate(380,0)">
+                <rect class="bar" x="0" y="220" width="40" height="140" fill="#0D47A1"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="190" width="130" height="24"></rect>
+                    <text x="5" y="207" fill="#fff">Jun: $82,000</text>
+                </g>
+            </g>
+
+            <!-- JUL -->
+            <g class="chart-group" transform="translate(440,0)">
+                <rect class="bar" x="0" y="200" width="40" height="160" fill="#F57C00"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="170" width="130" height="24"></rect>
+                    <text x="5" y="187" fill="#fff">Jul: $90,000</text>
+                </g>
+            </g>
+
+            <!-- AUG -->
+            <g class="chart-group" transform="translate(500,0)">
+                <rect class="bar" x="0" y="160" width="40" height="200" fill="#E65100"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="130" width="140" height="24"></rect>
+                    <text x="5" y="147" fill="#fff">Aug: $110,000</text>
+                </g>
+            </g>
+
+            <!-- SEP -->
+            <g class="chart-group" transform="translate(560,0)">
+                <rect class="bar" x="0" y="170" width="40" height="190" fill="#EF5350"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="140" width="140" height="24"></rect>
+                    <text x="5" y="157" fill="#fff">Sep: $105,000</text>
+                </g>
+            </g>
+
+            <!-- OCT -->
+            <g class="chart-group" transform="translate(620,0)">
+                <rect class="bar" x="0" y="190" width="40" height="170" fill="#C62828"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="160" width="140" height="24"></rect>
+                    <text x="5" y="177" fill="#fff">Oct: $98,000</text>
+                </g>
+            </g>
+
+            <!-- NOV -->
+            <g class="chart-group" transform="translate(680,0)">
+                <rect class="bar" x="0" y="205" width="40" height="155" fill="#AD1457"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="175" width="150" height="24"></rect>
+                    <text x="5" y="192" fill="#fff">Nov: $92,000</text>
+                </g>
+            </g>
+
+            <!-- DEC -->
+            <g class="chart-group" transform="translate(740,0)">
+                <rect class="bar" x="0" y="130" width="40" height="230" fill="#6A1B9A"></rect>
+                <g class="tooltip" visibility="hidden">
+                    <rect x="0" y="100" width="150" height="24"></rect>
+                    <text x="5" y="117" fill="#fff">Dec: $135,000</text>
+                </g>
+            </g>
+
+        </svg>
+    </div>
+</div>
+
+</body>
+</html>

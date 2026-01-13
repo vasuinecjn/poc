@@ -28,7 +28,7 @@ public class Application {
         } catch (InterruptedException ignored) {
         }
         try {
-            new WebDriverWait(driver, Duration.ofSeconds(10))
+            new WebDriverWait(driver, Duration.ofSeconds(30))
                     .until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("acceptAllButton"))));
             webOp.click(driver.findElement(By.id("acceptAllButton")));
         } catch (Exception e) {
