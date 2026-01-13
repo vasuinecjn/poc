@@ -2,11 +2,12 @@
 <suite name="MySuite" parallel="methods" thread-count="1">
     <listeners>
         <listener class-name="org.poc.listeners.ExtentTestNGListener"/>
+        <listener class-name="org.poc.listeners.RetryAnnotationTransformer"/>
     </listeners>
     <test name="MyTests">
         <classes>
-          <class name="org.poc.paypal.PaypalTest"/>
-           <class name="org.poc.paypal.ShopAndBuyTests"/>
+            <class name="org.poc.paypal.PaypalTest"/>
+            <class name="org.poc.paypal.ShopAndBuyTests"/>
         </classes>
     </test>
     <test name="Graph Tests">
