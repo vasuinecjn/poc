@@ -1,3 +1,3 @@
 testCases:
-  - name: "Get employee year on year"
+  - name: "Get employee growth year on year"
     isSkip: false
