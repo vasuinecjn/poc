@@ -36,9 +36,7 @@ public class GraphHomePage extends BasePage {
 
     public void showAndHideDeptGraphs(Map<String, Object> data) {
         for (Object object : (List<Map<String, Object>>) data.get("departments")) {
-            WebElement department = webOp
-                    .getElement(getLocator("hideEmpGrowthGraph", new String[] { String.valueOf(object) }));
-            department.click();
+            webOp.click(getLocator("hideEmpGrowthGraph", new String[] { String.valueOf(object) }));
             try {
                 Thread.sleep(2000);
             } catch (Exception e) {
