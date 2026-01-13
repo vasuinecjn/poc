@@ -2,7 +2,6 @@ package org.poc;
 
 import java.time.Duration;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -29,8 +28,8 @@ public class Application {
         }
         try {
             new WebDriverWait(driver, Duration.ofSeconds(30))
-                    .until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("acceptAllButton"))));
-            webOp.click(driver.findElement(By.id("acceptAllButton")));
+                    .until(ExpectedConditions.elementToBeClickable(webOp.getElement("acceptCookieButton|id|acceptAllButton")));
+            webOp.click("acceptCookieButton|id|acceptAllButton");
         } catch (Exception e) {
         }
         return new PayPalHomePage(driver, webOp);

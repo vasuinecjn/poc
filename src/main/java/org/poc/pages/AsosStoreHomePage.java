@@ -15,14 +15,14 @@ public class AsosStoreHomePage extends BasePage {
     }
 
     public AsosStoreHomePage searchAndAddProductToBag(Map<String, Object> data) {
-        this.webOp.click(getElement("searchField"));
-        this.webOp.fill(getElement("searchField"), (String) data.get("searchProduct"));
-        this.webOp.click(getElement("searchButton"));
+        webOp.click(getLocator("searchField"));
+        webOp.fill(getLocator("searchField"), (String) data.get("searchProduct"));
+        webOp.click(getLocator("searchButton"));
         // this.webOp.waitUntilVisible(getBy("searchResults"), 10000);
         // this.webOp.click(getElement("searchResults"));
-        this.webOp.waitUntilVisible(getBy("selectProductByIndex", (String) data.get("selectProductByIndex")), 10000);
-        this.webOp.click(getElement("selectProductByIndex", (String) data.get("selectProductByIndex")));
-        this.webOp.click(getElement("addToBagButton"));
+        webOp.waitUntilVisible(getLocator("selectProductByIndex", (String) data.get("selectProductByIndex")));
+        webOp.click(getLocator("selectProductByIndex", (String) data.get("selectProductByIndex")));
+        webOp.click(getLocator("addToBagButton"));
         return this;
     }
 }

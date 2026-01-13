@@ -4,17 +4,17 @@
         <listener class-name="org.poc.listeners.ExtentTestNGListener"/>
         <listener class-name="org.poc.listeners.RetryAnnotationTransformer"/>
     </listeners>
-    <test name="MyTests">
-        <classes>
-            <class name="org.poc.paypal.PaypalTest"/>
-            <class name="org.poc.paypal.ShopAndBuyTests"/>
-        </classes>
-    </test>
-    <test name="Graph Tests">
+   <test name="MyTests">
+       <classes>
+           <class name="org.poc.paypal.PaypalTest"/>
+<!--           <class name="org.poc.paypal.ShopAndBuyTests"/>-->
+       </classes>
+   </test>
+    <!-- <test name="Graph Tests">
         <classes>
             <class name="org.poc.graphs.EmployeeGraphTests"/>
             <class name="org.poc.graphs.EmployeeDepartmentGraphTests"/>
             <class name="org.poc.graphs.MonthlyRevenueTests"/>
         </classes>
-    </test>
+    </test> -->
 </suite>

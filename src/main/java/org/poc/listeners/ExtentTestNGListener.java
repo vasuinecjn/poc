@@ -15,16 +15,22 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
 
 public class ExtentTestNGListener implements ITestListener {
     private static ExtentReports extent;
     private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
     private static ThreadLocal<Logger> logger = new ThreadLocal<>();
 
-
     // Initialize ExtentReports once
     static {
-        String reportPath = System.getProperty("user.dir") + "/test-output/ExtentReport.html";
+        String reportPath = System.getProperty("user.dir") + "\\test-output\\ExtentReport.html";
         ExtentSparkReporter spark = new ExtentSparkReporter(reportPath);
         spark.config().setDocumentTitle("Automation Report");
         spark.config().setReportName("Selenium + TestNG Results");
@@ -49,26 +55,35 @@ public class ExtentTestNGListener implements ITestListener {
 
         test.set(extent.createTest(testName));
 
-        // Create per-test log file
-        String logFile = "logs/" + testName.replaceAll("\\s+", "_") + ".log";
+        // Sanitize test name for logger and file
+        String safeTestName = testName.replaceAll("\\s+", "_");
+        String logFile = "logs\\" + safeTestName + ".log";
+
+        System.out.println("Initializing logger for: " + safeTestName + " -> " + logFile);
+
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern("[%d{HH:mm:ss}] %-5level %logger{36} - %msg%n")
                 .build();
         FileAppender appender = FileAppender.newBuilder()
-                .setName(testName + "Appender")
+                .setName(safeTestName + "Appender")
                 .withFileName(logFile)
                 .setLayout(layout)
                 .setConfiguration(config)
                 .build();
         appender.start();
         config.addAppender(appender);
-        config.getRootLogger().addAppender(appender, null, null);
+
+        // Create a new LoggerConfig for this specific test logger
+        LoggerConfig loggerConfig = new LoggerConfig(safeTestName, Level.DEBUG, false);
+        loggerConfig.addAppender(appender, null, null);
+        config.removeLogger(safeTestName); // Remove existing if any
+        config.addLogger(safeTestName, loggerConfig);
+
         ctx.updateLoggers();
 
-        logger.set(LogManager.getLogger(testName));
-
+        logger.set(LogManager.getLogger(safeTestName));
     }
 
     @Override
@@ -90,8 +105,16 @@ public class ExtentTestNGListener implements ITestListener {
 
     private void attachLogToReport(ITestResult result) {
         String testName = test.get().getModel().getName();
-        String logFile = "logs/" + testName.replaceAll("\\s+", "_") + ".log";
-        test.get().addScreenCaptureFromPath(logFile); // attaches log file as artifact
+        String safeTestName = testName.replaceAll("\\s+", "_");
+        String logFile = "logs\\" + safeTestName + ".log";
+        String absolutePath = System.getProperty("user.dir") + "\\" + logFile;
+
+        try {
+            String logContent = new String(Files.readAllBytes(Paths.get(absolutePath)));
+            test.get().info(MarkupHelper.createCodeBlock(logContent));
+        } catch (IOException e) {
+            test.get().warning("Could not attach log file: " + absolutePath + " - " + e.getMessage());
+        }
     }
 
     public static ExtentTest getTest() {
@@ -101,6 +124,5 @@ public class ExtentTestNGListener implements ITestListener {
     public static Logger getLogger() {
         return logger.get();
     }
-
 
 }

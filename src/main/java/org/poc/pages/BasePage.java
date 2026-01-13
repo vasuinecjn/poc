@@ -1,8 +1,6 @@
 package org.poc.pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.poc.WebOperations;
 
 import java.io.IOException;
@@ -56,17 +54,11 @@ public abstract class BasePage {
         }
     }
 
-    public String getLocator(String key) {
-        return locators.get(key);
-    }
-
-    public WebElement getElement(String key, String... args) {
-        String locatorValue = getLocator(key);
+    public String getLocator(String key, String... args) {
+        String locatorValue = locators.get(key);
         if (locatorValue == null) {
             throw new RuntimeException("Locator not found for key: " + key);
         }
-
-        // Split into type and expression
         String[] parts = locatorValue.split("\\|", 2);
         String type = parts[0].trim();
         String expr = parts[1].trim();
@@ -75,46 +67,6 @@ public abstract class BasePage {
         for (int i = 0; i < args.length; i++) {
             expr = expr.replace("{" + i + "}", String.valueOf(args[i]));
         }
-        switch (type.toLowerCase()) {
-            case "css":
-                return this.webOp.waitForElement(By.cssSelector(expr));
-            case "xpath":
-                return this.webOp.waitForElement(By.xpath(expr));
-            case "id":
-                return this.webOp.waitForElement(By.id(expr));
-            case "name":
-                return this.webOp.waitForElement(By.name(expr));
-            default:
-                throw new RuntimeException("Unsupported locator type: " + type);
-        }
-    }
-
-    public By getBy(String key, String... args) {
-        String locatorValue = getLocator(key);
-        if (locatorValue == null) {
-            throw new RuntimeException("Locator not found for key: " + key);
-        }
-
-        // Split into type and expression
-        String[] parts = locatorValue.split("\\|", 2);
-        String type = parts[0].trim();
-        String expr = parts[1].trim();
-
-        // Replace placeholders {0}, {1}, {2}... with args
-        for (int i = 0; i < args.length; i++) {
-            expr = expr.replace("{" + i + "}", String.valueOf(args[i]));
-        }
-        switch (type.toLowerCase()) {
-            case "css":
-                return By.cssSelector(expr);
-            case "xpath":
-                return By.xpath(expr);
-            case "id":
-                return By.id(expr);
-            case "name":
-                return By.name(expr);
-            default:
-                throw new RuntimeException("Unsupported locator type: " + type);
-        }
+        return key + "|" + type + "|" + expr;
     }
 }

@@ -13,12 +13,12 @@ public class ShopAndBuyPage extends BasePage {
 
     public AsosStoreHomePage selectStoreByCategory(Map<String, Object> data) {
         String mainWindowHandle = driver.getWindowHandle();
-        this.webOp.select(getElement("categoryDropdown"), (String) data.get("category"));
-        this.webOp.click(getElement("categoryGoButton"));
+        webOp.select(getLocator("categoryDropdown"), (String) data.get("category"));
+        webOp.click(getLocator("categoryGoButton"));
         // WebElement section = getElement("offerSection");
         // webOp.click(section.findElement(By.cssSelector("a[href='https://www.asos.com/women/']")));
-        this.webOp.scrollToElement(getElement("asosStoreLink"));
-        this.webOp.navigateTo(getElement("asosStoreLink").getAttribute("href"));
+        webOp.scrollToElement(getLocator("asosStoreLink"));
+        webOp.navigateTo(webOp.getElement(getLocator("asosStoreLink")).getAttribute("href"));
 
         for (String handle : driver.getWindowHandles()) {
             if (!handle.equals(mainWindowHandle)) {

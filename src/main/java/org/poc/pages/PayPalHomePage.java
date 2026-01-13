@@ -16,23 +16,23 @@ public class PayPalHomePage extends BasePage {
     public PayPalHomePage hoverOnMenuItems(ArrayList<String> menuItems) {
         for (String item : menuItems) {
             try {
-                WebElement menu = getElement("menuButton", item);
-                Actions actions = new Actions(this.driver);
+
+                WebElement menu = webOp.getElement(getLocator("menuButton", item));
+                Actions actions = new Actions(driver);
                 actions.moveToElement(menu).perform();
-                System.out.println("Hovered on: " + item);
+                webOp.log().info("Hovered on '{}'", item);
                 Thread.sleep(3000);
             } catch (Throwable t) {
-                System.out.println("Failed to hover on: " + item + " -> " + t.getMessage());
+                webOp.log().error("Failed to hover on: '{}'", t.getMessage());
             }
         }
         return this;
     }
 
     public ShopAndBuyPage navigateToShopAndBuyPage() {
-        this.webOp.scrollToBottom();
-        // this.webOp.scrollUntilElementVisible(getElement("shopAndBuyLink"));
-        this.webOp.scrollToElement(getElement("shopAndBuyLink"));
-        this.webOp.jsClick(getElement("shopAndBuyLink"));
+        webOp.scrollToBottom();
+        webOp.scrollToElement(webOp.getElement(getLocator("shopAndBuyLink")));
+        webOp.jsClick(getLocator("shopAndBuyLink"));
         return new ShopAndBuyPage(driver, webOp);
     }
 }

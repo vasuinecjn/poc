@@ -14,7 +14,7 @@ public class PaypalTest extends SeleniumTestCase {
         application
                 .launchPayPalApplication()
                 .hoverOnMenuItems((ArrayList<String>) testCase.get("hover"));
-        System.out.println("Title: " + getDriver().getTitle());
+        getWebOperations().log().info("Title: " + getDriver().getTitle());
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
